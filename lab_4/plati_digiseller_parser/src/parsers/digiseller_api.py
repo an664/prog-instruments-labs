@@ -1,9 +1,13 @@
-import requests
 import hashlib
-import time
 import logging
+import time
+from pathlib import Path
 
-logging.basicConfig(filename='logs/digiseller_api.log', level=logging.INFO)
+import requests
+
+LOG_DIR = Path("logs")
+LOG_DIR.mkdir(parents=True, exist_ok=True)
+logging.basicConfig(filename=str(LOG_DIR / 'digiseller_api.log'), level=logging.INFO)
 
 def get_token(seller_id, api_key):
     timestamp = int(time.time())
@@ -15,11 +19,12 @@ def get_token(seller_id, api_key):
         "sign": sign
     }
     
-    response = requests.post("https://api.digiseller.ru/api/apilogin", json=data)
-    if response.status_code == 200:
-        return response.json()['token']
-    else:
-        logging.error(f"Failed to get token: {response.text}")
+    try:
+        response = requests.post("https://api.digiseller.ru/api/apilogin", json=data, timeout=10)
+        response.raise_for_status()
+        return response.json().get('token')
+    except requests.RequestException as exc:
+        logging.error(f"Failed to get token: {exc}")
         return None
 
 def get_ad_data(token, owner):
@@ -31,11 +36,12 @@ def get_ad_data(token, owner):
         'owner': owner,
         'lang': 'ru-RU'
     }
-    response = requests.get("https://api.digiseller.ru/api/rekl", headers=headers, params=params)
-    if response.status_code == 200:
+    try:
+        response = requests.get("https://api.digiseller.ru/api/rekl", headers=headers, params=params, timeout=10)
+        response.raise_for_status()
         return response.json()
-    else:
-        logging.error(f"Failed to get ad data: {response.text}")
+    except requests.RequestException as exc:
+        logging.error(f"Failed to get ad data: {exc}")
         return None
 
 def process_digiseller_data(config):
