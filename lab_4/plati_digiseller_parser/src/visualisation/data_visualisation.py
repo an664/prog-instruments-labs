@@ -14,16 +14,21 @@ DATA_PROCESSED_DIR = Path("data/processed")
 for path in (LOG_DIR, DATA_PROCESSED_DIR):
     path.mkdir(parents=True, exist_ok=True)
 
-logging.basicConfig(filename=str(LOG_DIR / 'data_visualisation.log'), level=logging.INFO,
-                    format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    filename=str(LOG_DIR / 'data_visualisation.log'),
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+)
 
 
 def plot_sales_data(db_path, start_date, end_date):
     with DBManager(db_path) as db:
         data = db.get_plati_market_data(start_date, end_date)
 
-    df = pd.DataFrame([(row[1], json.loads(row[2])['sales'], row[3]) for row in data],
-                      columns=['url', 'sales', 'date'])
+    df = pd.DataFrame(
+        [(row[1], json.loads(row[2])['sales'], row[3]) for row in data],
+        columns=['url', 'sales', 'date'],
+    )
 
     plt.figure(figsize=(12, 6))
     for url in df['url'].unique():
@@ -45,10 +50,14 @@ def create_data_table(db_path, start_date, end_date):
         plati_data = db.get_plati_market_data(start_date, end_date)
         digiseller_data = db.get_digiseller_data(start_date, end_date)
 
-    df_plati = pd.DataFrame([(row[1], json.loads(row[2]), row[3]) for row in plati_data],
-                            columns=['url', 'data', 'date'])
-    df_digiseller = pd.DataFrame([(json.loads(row[1]), row[2]) for row in digiseller_data],
-                                 columns=['data', 'date'])
+    df_plati = pd.DataFrame(
+        [(row[1], json.loads(row[2]), row[3]) for row in plati_data],
+        columns=['url', 'data', 'date'],
+    )
+    df_digiseller = pd.DataFrame(
+        [(json.loads(row[1]), row[2]) for row in digiseller_data],
+        columns=['data', 'date'],
+    )
 
     return df_plati, df_digiseller
 
@@ -57,11 +66,17 @@ def plot_comparison(db_path, start_date, end_date):
     df_plati, df_digiseller = create_data_table(db_path, start_date, end_date)
 
     plt.figure(figsize=(12, 6))
-    plt.plot(df_plati['date'], df_plati['data'].apply(lambda x: x['sales']), label='Plati Market')
+    plt.plot(
+        df_plati['date'],
+        df_plati['data'].apply(lambda x: x['sales']),
+        label='Plati Market',
+    )
     plt.plot(
         df_digiseller['date'],
-        df_digiseller['data'].apply(lambda x: sum(p.get('count', 0) for p in x.get('products', []))),
-        label='Digiseller'
+        df_digiseller['data'].apply(
+            lambda x: sum(p.get('count', 0) for p in x.get('products', []))
+        ),
+        label='Digiseller',
     )
 
     plt.title('Сравнение продаж Plati Market и Digiseller')
@@ -79,21 +94,44 @@ def plot_changes(config):
         start_date = pd.to_datetime(config['visualization']['start_date'])
         end_date = pd.to_datetime(config['visualization']['end_date'])
 
-        plati_changes = pd.read_csv(DATA_PROCESSED_DIR / 'plati_market_changes.csv', parse_dates=['date'])
-        digiseller_changes = pd.read_csv(DATA_PROCESSED_DIR / 'digiseller_changes.csv', parse_dates=['date'])
+        plati_changes = pd.read_csv(
+            DATA_PROCESSED_DIR / 'plati_market_changes.csv',
+            parse_dates=['date'],
+        )
+        digiseller_changes = pd.read_csv(
+            DATA_PROCESSED_DIR / 'digiseller_changes.csv',
+            parse_dates=['date'],
+        )
 
-        plati_changes = plati_changes[(plati_changes['date'] >= start_date) & (plati_changes['date'] <= end_date)]
-        digiseller_changes = digiseller_changes[(digiseller_changes['date'] >= start_date) & (digiseller_changes['date'] <= end_date)]
+        plati_changes = plati_changes[
+            (plati_changes['date'] >= start_date)
+            & (plati_changes['date'] <= end_date)
+        ]
+        digiseller_changes = digiseller_changes[
+            (digiseller_changes['date'] >= start_date)
+            & (digiseller_changes['date'] <= end_date)
+        ]
 
         if plati_changes.empty and digiseller_changes.empty:
-            logging.warning("No data available for plotting changes in the specified date range")
+            logging.warning(
+                "No data available for plotting changes "
+                "in the specified date range"
+            )
             return
 
         plt.figure(figsize=(12, 6))
         if not plati_changes.empty:
-            plt.plot(plati_changes['date'], plati_changes['sales_change'], label='Plati Market')
+            plt.plot(
+                plati_changes['date'],
+                plati_changes['sales_change'],
+                label='Plati Market',
+            )
         if not digiseller_changes.empty:
-            plt.plot(digiseller_changes['date'], digiseller_changes['sales_change'], label='Digiseller')
+            plt.plot(
+                digiseller_changes['date'],
+                digiseller_changes['sales_change'],
+                label='Digiseller',
+            )
 
         plt.title('Изменения в продажах')
         plt.xlabel('Дата')
@@ -107,8 +145,14 @@ def plot_changes(config):
         plt.close()
         logging.info("Changes plot created successfully")
 
-        plati_changes.to_csv(DATA_PROCESSED_DIR / 'filtered_plati_market_changes.csv', index=False)
-        digiseller_changes.to_csv(DATA_PROCESSED_DIR / 'filtered_digiseller_changes.csv', index=False)
+        plati_changes.to_csv(
+            DATA_PROCESSED_DIR / 'filtered_plati_market_changes.csv',
+            index=False,
+        )
+        digiseller_changes.to_csv(
+            DATA_PROCESSED_DIR / 'filtered_digiseller_changes.csv',
+            index=False,
+        )
 
     except FileNotFoundError as e:
         logging.error(f"File not found: {str(e)}")
@@ -126,7 +170,13 @@ if __name__ == "__main__":
 
     plot_sales_data(db_path, start_date, end_date)
     df_plati, df_digiseller = create_data_table(db_path, start_date, end_date)
-    df_plati.to_csv(DATA_PROCESSED_DIR / 'plati_market_data.csv', index=False)
-    df_digiseller.to_csv(DATA_PROCESSED_DIR / 'digiseller_data.csv', index=False)
+    df_plati.to_csv(
+        DATA_PROCESSED_DIR / 'plati_market_data.csv',
+        index=False,
+    )
+    df_digiseller.to_csv(
+        DATA_PROCESSED_DIR / 'digiseller_data.csv',
+        index=False,
+    )
     plot_comparison(db_path, start_date, end_date)
     plot_changes(config)

@@ -42,8 +42,14 @@ def process_data():
                 config['visualization']['end_date'],
             )
 
-        pd.DataFrame(plati_changes).to_csv(DATA_PROCESSED_DIR / 'plati_market_changes.csv', index=False)
-        pd.DataFrame(digiseller_changes).to_csv(DATA_PROCESSED_DIR / 'digiseller_changes.csv', index=False)
+        pd.DataFrame(plati_changes).to_csv(
+            DATA_PROCESSED_DIR / 'plati_market_changes.csv',
+            index=False,
+        )
+        pd.DataFrame(digiseller_changes).to_csv(
+            DATA_PROCESSED_DIR / 'digiseller_changes.csv',
+            index=False,
+        )
         logging.info("Data processing completed")
     except Exception:
         logging.exception("Error during data processing")
@@ -62,8 +68,9 @@ def calculate_daily_changes(db, start_date, end_date):
                 'date': date,
                 'url': url,
                 'sales_change': curr['sales'] - prev['sales'],
-                'reviews_change': (curr['positive_reviews'] + curr['negative_reviews']) -
-                                  (prev['positive_reviews'] + prev['negative_reviews'])
+                'reviews_change': (
+                    curr['positive_reviews'] + curr['negative_reviews']
+                ) - (prev['positive_reviews'] + prev['negative_reviews'])
             })
         prev_by_url[url] = curr
 

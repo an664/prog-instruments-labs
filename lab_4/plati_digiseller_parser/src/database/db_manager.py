@@ -3,6 +3,7 @@ import json
 from datetime import datetime
 from pathlib import Path
 
+
 class DBManager:
     def __init__(self, db_path):
         Path(db_path).parent.mkdir(parents=True, exist_ok=True)
@@ -32,8 +33,14 @@ class DBManager:
                     date DATE
                 )
             ''')
-            self.conn.execute('CREATE INDEX IF NOT EXISTS idx_plati_market_date ON plati_market_data(date)')
-            self.conn.execute('CREATE INDEX IF NOT EXISTS idx_digiseller_date ON digiseller_data(date)')
+            self.conn.execute(
+                'CREATE INDEX IF NOT EXISTS idx_plati_market_date '
+                'ON plati_market_data(date)'
+            )
+            self.conn.execute(
+                'CREATE INDEX IF NOT EXISTS idx_digiseller_date '
+                'ON digiseller_data(date)'
+            )
 
     def insert_plati_market_data(self, url, data):
         with self.conn:
