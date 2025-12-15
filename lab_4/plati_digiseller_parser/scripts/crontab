@@ -1,0 +1,2 @@
+*/5 * * * * /scripts/run_parsers.sh >> /var/log/cron.log 2>&1
+0 0 * * * /scripts/clean_cache.sh >> /var/log/cron.log 2>&1
