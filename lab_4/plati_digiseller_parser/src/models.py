@@ -56,7 +56,8 @@ class DigisellerData:
     @classmethod
     def from_api(cls, raw: Dict[str, Any]) -> "DigisellerData":
         products = [
-            DigisellerProduct.from_dict(item) for item in raw.get("products", [])
+            DigisellerProduct.from_dict(item)
+            for item in raw.get("products", [])
         ]
         return cls(products=products)
 

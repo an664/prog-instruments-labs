@@ -1,4 +1,3 @@
-import json
 from pathlib import Path
 from typing import Optional, Tuple, List
 
@@ -6,7 +5,7 @@ import pandas as pd
 
 from src.config import AppConfig
 from src.database.db_manager import DBManager
-from src.models import DigisellerData, PlatiStats
+from src.models import DigisellerData
 from src.parsers.digiseller_api import DigisellerParser
 from src.parsers.plati_market_parser import PlatiMarketParser
 from src.utils.http_client import HttpClient
@@ -58,9 +57,11 @@ def process_data(
     return plati_changes, digiseller_changes
 
 
-def calculate_daily_changes(db: DBManager, start_date: str, end_date: str) -> Tuple[
-    list[dict], list[dict]
-]:
+def calculate_daily_changes(
+    db: DBManager,
+    start_date: str,
+    end_date: str,
+) -> Tuple[list[dict], list[dict]]:
     plati_rows = db.fetch_plati_history(start_date, end_date)
     plati_changes = []
     prev_by_url = {}

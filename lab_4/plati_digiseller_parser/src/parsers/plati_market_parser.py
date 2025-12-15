@@ -11,7 +11,11 @@ from src.utils.logging_config import setup_logging
 
 
 class PlatiMarketParser(Parser):
-    def __init__(self, client: Optional[HttpClient] = None, logger: Optional[logging.Logger] = None):
+    def __init__(
+        self,
+        client: Optional[HttpClient] = None,
+        logger: Optional[logging.Logger] = None
+    ):
         self.client = client or HttpClient()
         self.logger = logger or setup_logging("plati_market_parser")
 
@@ -65,19 +69,28 @@ class PlatiMarketParser(Parser):
 
             stats = soup.select('.merchant-statistic ol li')
             if len(stats) < 2:
-                self.logger.warning("Unexpected seller stats layout on %s", url)
+                self.logger.warning(
+                    "Unexpected seller stats layout on %s",
+                    url,
+                )
                 return None
             sales = int(stats[0].text.split(':')[1].strip())
             returns = int(stats[1].text.split(':')[1].strip())
 
             reviews = soup.select_one('.goods_reviews span')
             if not reviews or not reviews.contents:
-                self.logger.warning("No reviews block on seller page %s", url)
+                self.logger.warning(
+                    "No reviews block on seller page %s",
+                    url,
+                )
                 return None
             positive_reviews = int(reviews.contents[0].strip())
             neg_span = reviews.select_one('span')
             if not neg_span:
-                self.logger.warning("No negative review span on seller page %s", url)
+                self.logger.warning(
+                    "No negative review span on seller page %s",
+                    url,
+                )
                 return None
             negative_reviews = int(neg_span.text.strip())
 

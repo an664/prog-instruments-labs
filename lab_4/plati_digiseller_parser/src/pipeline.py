@@ -29,17 +29,25 @@ def run_pipeline(config_path: Path = Path("config/config.yaml")) -> None:
         config.visualization.start_date,
         config.visualization.end_date,
     )
-    df_plati.to_csv(Path("data/processed/plati_market_data.csv"), index=False)
-    df_digiseller.to_csv(Path("data/processed/digiseller_data.csv"), index=False)
+    df_plati.to_csv(
+        Path("data/processed/plati_market_data.csv"),
+        index=False,
+    )
+    df_digiseller.to_csv(
+        Path("data/processed/digiseller_data.csv"),
+        index=False,
+    )
     plot_comparison(
         config.database_path,
         config.visualization.start_date,
         config.visualization.end_date,
     )
-    plot_changes({"visualization": {
-        "start_date": config.visualization.start_date,
-        "end_date": config.visualization.end_date,
-    }})
+    plot_changes({
+        "visualization": {
+            "start_date": config.visualization.start_date,
+            "end_date": config.visualization.end_date,
+        }
+    })
     logger.info("Pipeline finished")
 
 

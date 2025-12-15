@@ -11,7 +11,11 @@ from src.utils.logging_config import setup_logging
 
 
 class DigisellerParser(Parser):
-    def __init__(self, client: Optional[HttpClient] = None, logger: Optional[logging.Logger] = None):
+    def __init__(
+        self,
+        client: Optional[HttpClient] = None,
+        logger: Optional[logging.Logger] = None
+    ):
         self.client = client or HttpClient()
         self.logger = logger or setup_logging("digiseller_api")
 
@@ -59,8 +63,14 @@ class DigisellerParser(Parser):
             return None
 
     def fetch(self, config: AppConfig) -> Optional[DigisellerData]:
-        self.logger.info("Attempting to get token for seller_id: %s", config.digiseller_seller_id)
-        token = self.get_token(config.digiseller_seller_id, config.digiseller_api_key)
+        self.logger.info(
+            "Attempting to get token for seller_id: %s",
+            config.digiseller_seller_id,
+        )
+        token = self.get_token(
+            config.digiseller_seller_id,
+            config.digiseller_api_key,
+        )
         if token:
             self.logger.info("Successfully obtained token, fetching ad data")
             return self.get_ad_data(token, config.digiseller_owner)

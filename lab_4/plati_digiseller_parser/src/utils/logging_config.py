@@ -1,9 +1,12 @@
 import logging
 from pathlib import Path
-from typing import Optional
 
 
-def setup_logging(name: str, log_dir: Path = Path("logs"), level: int = logging.INFO) -> logging.Logger:
+def setup_logging(
+    name: str,
+    log_dir: Path = Path("logs"),
+    level: int = logging.INFO
+) -> logging.Logger:
     log_dir.mkdir(parents=True, exist_ok=True)
     logger = logging.getLogger(name)
     logger.setLevel(level)

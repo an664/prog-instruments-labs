@@ -83,7 +83,9 @@ class DBManager:
             ''', (start_date, end_date))
             return cursor.fetchall()
 
-    def fetch_plati_history(self, start_date, end_date) -> List[Tuple[str, PlatiStats, str]]:
+    def fetch_plati_history(
+        self, start_date, end_date
+    ) -> List[Tuple[str, PlatiStats, str]]:
         rows = self.get_plati_market_data(start_date, end_date)
         result = []
         for _, url, data_json, date in rows:
@@ -91,7 +93,9 @@ class DBManager:
             result.append((url, stats, date))
         return result
 
-    def fetch_digiseller_history(self, start_date, end_date) -> List[Tuple[DigisellerData, str]]:
+    def fetch_digiseller_history(
+        self, start_date, end_date
+    ) -> List[Tuple[DigisellerData, str]]:
         rows = self.get_digiseller_data(start_date, end_date)
         result = []
         for _, data_json, date in rows:
