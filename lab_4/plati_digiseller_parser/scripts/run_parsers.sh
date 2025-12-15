@@ -2,15 +2,11 @@
 
 set -e  # Остановка скрипта при любой ошибке
 
-# Запуск парсеров
-python src/parsers/plati_market_parser.py
-python src/parsers/digiseller_api.py
-
 # Обработка и визуализация данных
-python src/data_processing/data_processor.py
-python src/visualisation/data_visualisation.py
+python -m src.data_processing.data_processor
+python -m src.visualisation.data_visualisation
 
 # Очистка кэша
-sh scripts/clean_cache.sh
+sh src/visualisation/clean_cache.sh
 
 echo "Все операции выполнены успешно"
