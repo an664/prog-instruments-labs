@@ -1,12 +1,9 @@
 import sys
 from pathlib import Path
 
-import pytest
-
-
-@pytest.fixture(scope="session", autouse=True)
-def add_project_root():
-    root = Path(__file__).resolve().parents[1]
-    sys.path.append(str(root))
-    yield
-    sys.path.remove(str(root))
+# Ensure project and src are importable before tests are collected
+ROOT = Path(__file__).resolve().parents[1]
+SRC = ROOT / "src"
+for path in (ROOT, SRC):
+    if str(path) not in sys.path:
+        sys.path.append(str(path))
