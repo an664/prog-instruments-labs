@@ -508,4 +508,6 @@ visualization:
         lambda self, cfg: DigisellerData([DigisellerProduct("a", 1, 2.0)]),
     )
 
+    import sys
+    sys.modules.pop("src.data_processing.data_processor", None)
     runpy.run_module("src.data_processing.data_processor", run_name="__main__")
