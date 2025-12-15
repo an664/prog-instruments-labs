@@ -1,4 +1,5 @@
 import logging
+import pytest
 
 from pathlib import Path
 from src.config import AppConfig, VisualizationConfig
@@ -70,9 +71,11 @@ def test_plati_product_page_missing_blocks():
     )
     assert parser.parse_product_page("http://example.com") is None
 
-    def raising_get(url):  # pragma: no cover
+    def raising_get(url):
         raise RuntimeError("boom")
 
+    with pytest.raises(RuntimeError):
+        raising_get("boom")
     parser = PlatiMarketParser(client=type("C", (), {"get": raising_get})())
     assert parser.parse_product_page("http://example.com") is None
 
@@ -138,9 +141,11 @@ def test_plati_seller_page_missing_blocks():
     )
     assert parser.parse_seller_page("http://example.com/seller") is None
 
-    def raising_get(url):  # pragma: no cover
+    def raising_get(url):
         raise RuntimeError("boom")
 
+    with pytest.raises(RuntimeError):
+        raising_get("boom")
     parser = PlatiMarketParser(client=type("C", (), {"get": raising_get})())
     assert parser.parse_seller_page("http://example.com/seller") is None
 
