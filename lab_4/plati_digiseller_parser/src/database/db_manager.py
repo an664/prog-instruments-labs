@@ -1,7 +1,10 @@
-import sqlite3
 import json
+import sqlite3
 from datetime import datetime
 from pathlib import Path
+from typing import List, Tuple
+
+from src.models import DigisellerData, PlatiStats
 
 
 class DBManager:
@@ -42,19 +45,25 @@ class DBManager:
                 'ON digiseller_data(date)'
             )
 
-    def insert_plati_market_data(self, url, data):
+    def insert_plati_market_data(self, url: str, data: PlatiStats):
         with self.conn:
             self.conn.execute('''
                 INSERT INTO plati_market_data (url, data, date)
                 VALUES (?, ?, ?)
-            ''', (url, json.dumps(data), datetime.now().date()))
+            ''', (url, json.dumps(data.to_dict()), datetime.now().date()))
 
-    def insert_digiseller_data(self, data):
+    def insert_digiseller_data(self, data: DigisellerData):
         with self.conn:
             self.conn.execute('''
                 INSERT INTO digiseller_data (data, date)
                 VALUES (?, ?)
-            ''', (json.dumps(data), datetime.now().date()))
+            ''', (json.dumps(data.to_dict()), datetime.now().date()))
+
+    def save_plati_stats(self, url: str, stats: PlatiStats) -> None:
+        self.insert_plati_market_data(url, stats)
+
+    def save_digiseller_data(self, data: DigisellerData) -> None:
+        self.insert_digiseller_data(data)
 
     def get_plati_market_data(self, start_date, end_date):
         with self.conn:
@@ -73,6 +82,22 @@ class DBManager:
                 ORDER BY date, id
             ''', (start_date, end_date))
             return cursor.fetchall()
+
+    def fetch_plati_history(self, start_date, end_date) -> List[Tuple[str, PlatiStats, str]]:
+        rows = self.get_plati_market_data(start_date, end_date)
+        result = []
+        for _, url, data_json, date in rows:
+            stats = PlatiStats.from_dict(json.loads(data_json))
+            result.append((url, stats, date))
+        return result
+
+    def fetch_digiseller_history(self, start_date, end_date) -> List[Tuple[DigisellerData, str]]:
+        rows = self.get_digiseller_data(start_date, end_date)
+        result = []
+        for _, data_json, date in rows:
+            data = DigisellerData.from_api(json.loads(data_json))
+            result.append((data, date))
+        return result
 
     def get_latest_data(self, table_name):
         if table_name not in ('plati_market_data', 'digiseller_data'):
