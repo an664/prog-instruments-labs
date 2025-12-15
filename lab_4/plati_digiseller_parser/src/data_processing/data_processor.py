@@ -6,8 +6,8 @@ import pandas as pd
 from src.config import AppConfig
 from src.database.db_manager import DBManager
 from src.models import DigisellerData
-from src.parsers.digiseller_api import DigisellerParser
-from src.parsers.plati_market_parser import PlatiMarketParser
+from src.parsers.digiseller import DigisellerParser
+from src.parsers.plati_market import PlatiMarketParser
 from src.utils.http_client import HttpClient
 from src.utils.logging_config import setup_logging
 

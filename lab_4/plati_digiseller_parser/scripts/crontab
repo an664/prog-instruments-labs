@@ -1,2 +1,2 @@
 */5 * * * * cd /opt/plati_digiseller_parser && ./scripts/run_parsers.sh >> /var/log/cron.log 2>&1
-0 0 * * * cd /opt/plati_digiseller_parser && ./src/visualisation/clean_cache.sh >> /var/log/cron.log 2>&1
+0 0 * * * cd /opt/plati_digiseller_parser && ./scripts/clean_cache.sh >> /var/log/cron.log 2>&1

@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-ROOT_DIR="$(cd "$(dirname "$0")/../.." && pwd)"
+ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 
 # Очистка временных файлов и кэша
 find "$ROOT_DIR/data/raw" -type f -mtime +7 -exec rm {} \; 2>/dev/null || true

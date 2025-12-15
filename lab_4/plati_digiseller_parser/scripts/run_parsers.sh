@@ -6,6 +6,6 @@ set -e  # Остановка скрипта при любой ошибке
 python -m src.pipeline
 
 # Очистка кэша
-sh src/visualisation/clean_cache.sh
+sh scripts/clean_cache.sh
 
 echo "Все операции выполнены успешно"
