@@ -1,0 +1,7 @@
+requests
+beautifulsoup4
+pyyaml
+matplotlib
+pandas
+pytest
+coverage
