@@ -1,0 +1,17 @@
+plati_market_urls:
+  - "https://plati.market/itm/product1"
+  - "https://plati.market/itm/product2"
+  - "https://plati.market/seller/seller1"
+
+digiseller_api_key: "REDACTED"
+digiseller_seller_id: 0
+digiseller_owner: 0
+
+database_path: "data/database.sqlite"
+
+parsing_interval_minutes: 5
+ad_data_check_interval_hours: 24
+
+visualization:
+  start_date: "2023-01-01"
+  end_date: "2024-12-31"

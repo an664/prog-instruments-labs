@@ -8,3 +8,4 @@ venv/
 *.log
 *.sqlite
 .DS_Store
+config/config.yaml

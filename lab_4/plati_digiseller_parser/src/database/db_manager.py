@@ -1,11 +1,19 @@
 import sqlite3
 import json
 from datetime import datetime
+from pathlib import Path
 
 class DBManager:
     def __init__(self, db_path):
+        Path(db_path).parent.mkdir(parents=True, exist_ok=True)
         self.conn = sqlite3.connect(db_path)
         self.create_tables()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.close_connection()
 
     def create_tables(self):
         with self.conn:
@@ -46,6 +54,7 @@ class DBManager:
             cursor = self.conn.execute('''
                 SELECT * FROM plati_market_data
                 WHERE date BETWEEN ? AND ?
+                ORDER BY url, date, id
             ''', (start_date, end_date))
             return cursor.fetchall()
 
@@ -54,10 +63,13 @@ class DBManager:
             cursor = self.conn.execute('''
                 SELECT * FROM digiseller_data
                 WHERE date BETWEEN ? AND ?
+                ORDER BY date, id
             ''', (start_date, end_date))
             return cursor.fetchall()
 
     def get_latest_data(self, table_name):
+        if table_name not in ('plati_market_data', 'digiseller_data'):
+            raise ValueError("Invalid table name")
         with self.conn:
             cursor = self.conn.execute(f'''
                 SELECT * FROM {table_name}
