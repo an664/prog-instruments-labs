@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 import asyncio
+import ssl
 import time
 from dataclasses import dataclass
 from typing import List, Optional
 
 import aiohttp
+import certifi
 from aiohttp import TCPConnector
 from aiohttp.resolver import AsyncResolver
 
@@ -69,7 +71,12 @@ async def run_load_test(config: TestConfig) -> TestResult:
             "Async DNS resolver requires 'aiodns'. Install requirements.txt."
         ) from exc
 
-    connector = TCPConnector(limit=config.max_connections, resolver=resolver)
+    ssl_context = ssl.create_default_context(cafile=certifi.where())
+    connector = TCPConnector(
+        limit=config.max_connections,
+        resolver=resolver,
+        ssl=ssl_context,
+    )
     timeout = aiohttp.ClientTimeout(total=None)
 
     async with aiohttp.ClientSession(connector=connector, timeout=timeout) as session:

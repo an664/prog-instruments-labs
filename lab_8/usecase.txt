@@ -8,15 +8,21 @@ Timeout for responses: 5s
 
 === Request Summary ===
 Total requests sent:    100
-Completed successfully: 0
-Failed requests:        100
+Completed successfully: 100
+Failed requests:        0
 - Timeout errors:       0
-- Connection errors:    100
+- Connection errors:    0
 - HTTP errors (5xx):    0
 
 === Response Time (ms) ===
-No completed responses.
+Min:     298.2
+Max:     3875.1
+Mean:    620.0
+Median:  484.5
+p75:     661.6
+p90:     1046.9
+p95:     1100.9
+p99:     1235.9
 
 === Status Code Distribution ===
-No responses.
-Connection errors: 100
+200 OK: 100
