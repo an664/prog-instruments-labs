@@ -1,0 +1,22 @@
+Command:
+python3 load_tester.py https://www.bitrix24.ru/prices/ 20 5 5
+
+Output:
+Target URL: https://www.bitrix24.ru/prices/
+Test duration: 5s, RPS: 20 (total 100 requests)
+Timeout for responses: 5s
+
+=== Request Summary ===
+Total requests sent:    100
+Completed successfully: 0
+Failed requests:        100
+- Timeout errors:       0
+- Connection errors:    100
+- HTTP errors (5xx):    0
+
+=== Response Time (ms) ===
+No completed responses.
+
+=== Status Code Distribution ===
+No responses.
+Connection errors: 100
